@@ -9,6 +9,8 @@ Return
 ```
 a reference for implementing meme support into standard dogecoin transactions
 you can find us on discord https://discord.gg/g5NmArGV
+and please have a look at the discussion on the dogecoin core github:
+https://github.com/dogecoin/dogecoin/discussions/2276
 
 # idea
 
