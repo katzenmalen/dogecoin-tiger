@@ -1,19 +1,20 @@
 # dogecoin-TIGER
 
+```
 Transaction
-Integrated
+Improvement for
 Giphy & 
 Emoji
 Return
-
+```
 a reference for implementing meme support into standard dogecoin transactions
 you can find us on discord https://discord.gg/g5NmArGV
 
 # idea
-```
+
 there are many ways to make dogecoin more fun to use and therefore be adapted by more people.
 we want to add emojis and giphy links to transactions because we think that would be fun.
-```
+
 the upcoming tx fee reduction leads to new way for new ideas on the reliable doge network.
 with a standard for sending memes / emojis, we pave the way for a smart doge protocol running
 just in the existing boundaries of the dogecoin-core protocol - no changes needed!
