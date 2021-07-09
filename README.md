@@ -3,9 +3,9 @@
 ```
 Transaction
 Improvement for
-Giphy & 
-Emoji
-Return
+Giphys & 
+Emojis in
+op_Return
 ```
 a reference for implementing meme support into standard dogecoin transactions
 you can find us on discord https://discord.gg/g5NmArGV
