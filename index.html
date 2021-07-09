@@ -80,15 +80,29 @@ script_hex: "6a040e01f432" -> 0e - 01f432
 
 
 
+$.urlParam = function(name){
+    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    if (results==null) {
+       return null;
+    }
+    return decodeURI(results[1]) || 0;
+}
 
-var tx_with_emoji_tiger = "db78e674f7ea0517810a3ce9f1002aeb5f65ce5fbe559b8a3c1c8f2cb2064e98"
-var tx_with_emoji_dragon = "112013da59790a522e07bcf9058f651a00c85b6597b45de4a016831dbd9ab3c2"
+
+var example_transactions = [
+{ "txid": "db78e674f7ea0517810a3ce9f1002aeb5f65ce5fbe559b8a3c1c8f2cb2064e98", "name": "tx_with_emoji_tiger" },
+{ "txid": "112013da59790a522e07bcf9058f651a00c85b6597b45de4a016831dbd9ab3c2", "name": "tx_with_emoji_dragon" },
+{ "txid": "7f0d62bd374f3f3186f5f6685d94f2b47035d5d9ac47a391983cde534f022fc3", "name": "tx_with_giphy_dogecoin" }
+];
+
+var tx_with_emoji_tiger = "db78e674f7ea0517810a3ce9f1002aeb5f65ce5fbe559b8a3c1c8f2cb2064e98";
+var tx_with_emoji_dragon = "112013da59790a522e07bcf9058f651a00c85b6597b45de4a016831dbd9ab3c2";
+var tx_with_emoji_new = "af1f7f4232845b37d6bd81de64a5f8056bfc58edc1d9bb9757b6b61ea65af101";
 var tx_with_giphy_id = "7f0d62bd374f3f3186f5f6685d94f2b47035d5d9ac47a391983cde534f022fc3";
 var tx_with_giphy_hex = "eeb70cf6e4495146848883d043d06a32ecda8fa2d5ff0b7c470616fa0c8f6981";
 
-var smartDogeTransaction = tx_with_emoji_tiger;
-//var smartDogeTransaction = tx_with_giphy_hex;
-
+var smartDogeTransaction = tx_with_giphy_hex;
+if($.urlParam('tx') && $.urlParam('tx') != "") smartDogeTransaction = $.urlParam('tx');
 
 var rgbToHexFix = function (rgb) { 
   var hex = Number(rgb).toString(16);
@@ -99,12 +113,29 @@ var rgbToHexFix = function (rgb) {
   return str;
 };
 
-doIt("giphy.com/Q4IN9hDFEwISDujIbe")
-
-function doIt(str) {
-
+function hex_to_ascii(str1)
+ {
+	var hex  = str1.toString();
+	var str = '';
+	for (var n = 0; n < hex.length; n += 2) {
+		str += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
+	}
+	return str;
+ }
+ 
+String.prototype.getGiphy = function(){
+  var hex  = this.toString();
+	var str = '';
+	for (var n = 0; n < hex.length; n += 2) {
+		str += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
+	}
+	console.error(str);
+	
+	return str;
+	
 }
 
+ 
 
 String.prototype.getHex = function(){
   var hex = Number(this).toString(16);
@@ -120,34 +151,52 @@ function extractHexFromRawTx(rawTx) {
 	var data = "";
 	rawTx.data.outputs.forEach(function(line) {
 		if(line.script.startsWith("OP_RETURN ")) {
-			console.log(line);
-			 
+			console.error(line);
 			data = line.script.slice(10,80);
-			
-			$('span#ctx').text(data);
-			console.log("hexdecode:", data.getHex());
 		}
 	})
-	hex = data.getHex()
 	
-	return hex;
+	
+	
+
+
+	if(data != "") {
+		$('span#opreturn').text(data);
+	if(data.getHex().startsWith("0e")) return data.getHex();
+	if(data.getGiphy().startsWith("0f")) return data.getGiphy();
+	} else return false;
 }
+
+
+
 
 
 function routeFromHex(hex) {
 
+	if(hex && hex != false) {
+	
+	var content = hex.substr(2);
 	switch(hex.substr(0,2)) {
 		case "00": 
 			return false;
 		case "0e":
 			//console.log("EMOJI FOUND");
-			return hex.substr(2);
+			$('span#ctype').html('EMOJI');
+			return content;		
+			
 		case "0f":
 			//console.log("GIPHY FOUND");
-			return hex.substr(2);
+			$('span#ctype').html('GIPHY');
+			return content;
+			
 		default: 
 			return false;	
 	}
+	
+	} else {
+		return false;
+	}
+
 
 }
 
@@ -163,42 +212,66 @@ $.get( "https://chain.so/api/v2/get_tx/DOGE/" + txid, function( response ) {
 	if(responseFinal) {
 		emoji = "&#x" + routeFromHex(extractHexFromRawTx(response))
 	}
-	
 	$(emojilink).html(emoji);
 }, "json" );
 
 }
 
-$.get( "https://chain.so/api/v2/get_tx/DOGE/" + smartDogeTransaction, function( response ) {
-  
 
+
+
+$.get( "https://chain.so/api/v2/get_tx/DOGE/" + smartDogeTransaction, function( response ) {
 	hexdata = extractHexFromRawTx(response);
+	console.warn(hexdata);
+	$('span#chex').text(hexdata);
 	finalData = routeFromHex(hexdata);
+	$('span#cemoji').html(finalData);
+	
+	if(hexdata.startsWith("0f")) {		
+		$('span#cemoji').html('<img src="https://media.giphy.com/media/' + finalData + '/giphy.gif" />');
+	} else {
+		$('span#cemoji').html("&#x"+finalData);
+	}
 	
 	// "&#x" + routeFromHex(extractHexFromRawTx(tx))
-	$('span#chex').text(hexdata);
+	
+$('span#ctx').text(smartDogeTransaction);
 	console.info('--- SMARTDOGE TX ----------------------------------\n', response, '\n', hexdata, '\n-----------------------------------------------------');
-	$('span#cemoji').html("&#x"+finalData);
+	
 	var txurl = 'https://chain.so/api/v2/tx/DOGE/' + smartDogeTransaction;
 	$('span#ctxlink').html('<a href="' + txurl + '">' + txurl + '</a>');
 	
 	//console.info(hexdata);
 
   $('span#txresponse').html( "Response: <PRE>" + JSON.stringify(response, undefined, 2) + "</PRE><br/>" ) // Dogecoin
+  //
+  
+ linkStr = "";
+ example_transactions.forEach(function(tx) {
+	linkStr += '<p><a href="?tx=' + tx.txid + '">' + tx.name + '</a></p>';
+ })
+$('span#othertx').html(linkStr);
 }, "json" );
 
 
- 
+
     </script>
   </head>
   <body>
-
-<div>
-<img src="https://gph.is/g/Z8vMloN">
-    <b>Transaction</b>: <span id="ctx"></span></br>
-	<b>Hex</b>: <span id="chex"></span></br>
-	<b>Emoji</b>: <span id="cemoji"></span></br>
+  <PRE>
+  <h1>dogecoin-TIGER</h1>
+	<h2><b>T</b>ransaction <b>I</b>ntegration for <b>G</b>iphys & <b>E</b>mojis in OP_<b>R</b>eturn</h2>
+	<span id="othertx"></span><br>
+	
+	<h2>Transaction Decoder / Viewer</h2>
+	<b>txid</b>: <span id="ctx"></span></br>
+	<b>OP_RETURN</b>: <span id="opreturn"></span></br>
+	<b>HEX ENCODED</b>: <span id="chex"></span></br>
+	<b>tiger-type</b>: <span id="ctype"></span></br>
+	
+	<b>DISPLAY</b>: <span id="cemoji"></span></br>
 	<b>TX Link</b>: <span id="ctxlink"></span></br>
+	</PRE>
 	<b>Raw Data</b>: <span id="txresponse"></span></br>
 		
 
