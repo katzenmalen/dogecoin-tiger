@@ -1,0 +1,240 @@
+
+<Html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pusher/2.1.6/pusher.min.js" type="text/javascript"></script>
+    <script>
+    /* SoChain uses the Pusher protocol for its websockets.
+     * Pusher is an opensource protocol built on top of websockets.
+     * See below for how to access our websockets.
+     * If you want to use something other than javascript, check out
+     * Pusher's client libraries here: http://pusher.com/docs/client_libraries ,
+     * however, take note of the Pusher host and port you must use for the client
+     * below. Documentation on non-javascript SoChain websocket clients coming soon.
+     */
+
+    // Enable websocket event logging - don't include this in production
+    // use Firebug in Firefox to see updates in the Firebug console
+    Pusher.log = function(message) {
+    if (window.console && window.console.log) {
+    window.console.log(message);
+    }
+    };
+
+    // basic websocket client configuration -- whom to connect to and what port to communicate on
+    Pusher.host = 'slanger1.chain.so'; // the location of our websocket server
+    Pusher.ws_port = 443; // we enforce SSL here
+    Pusher.wss_port = 443; // ...
+
+    // use the key 'e9f5cc20074501ca7395' to access our server
+    // initialize our websocket client
+    var pusher = new Pusher('e9f5cc20074501ca7395', { encrypted: true, disabledTransports: ['sockjs'], disableStats: true });
+    // connect to the SoChain websocket server
+    pusher.connection.bind('state_change', function(states) {
+    // states = {previous: 'oldState', current: 'newState'}
+    $('span#status').text("" + states.current);
+    });
+
+   
+
+    /*** start code for getting transaction/block announcements ***/
+
+    // get updates for the DOGE blockchain
+    var blockchain_channel = pusher.subscribe('blockchain_update_doge');
+
+    // process transaction announcements
+    blockchain_channel.bind('tx_update', function(data) {
+    if(data.type == "tx") {
+	
+    var txamount = data.value.sent_value
+	var txemoji = getEmojiFromTx(data.value.txid)
+	
+    $('<tr style="border-bottom: 1px dotted silver;"><td><a href="https://chain.so/tx/' + data.value.txid + '">'+data.value.txid+'</a></td><td style="text-align: center;">'+data.value.total_inputs+' : '+data.value.total_outputs+'</td><td style="">' + txamount + '</td><td id="emoji-'+data.value.txid+'"></td></tr>').prependTo("table#latest_transactions_table > tbody");
+    $('#latest_transactions_table > tbody > tr:gt(5)').remove();
+    $('span#cstxpm').replaceWith('<span id="cstxpm">' + data.value.txpm + ' TX/min</span>')
+    }
+    });
+
+    // process block announcements
+    blockchain_channel.bind('block_update', function(data) {
+    if (data.type == "block") {
+    $('span#csblock').replaceWith('<span id="csblock"><a href="https://chain.so/block/'+data.value.blockhash+'">' + parseInt(data.value.block_no) + '</a></span>')
+    }
+    });
+   /*** end code for getting transaction/block announcements ***/
+/*** 
+
+attempt to show emojis from doge transactions
+
+GET /api/v2/get_tx/{NETWORK}/{TXID}
+
+https://sochain.com/api/v2/tx/DOGE/db78e674f7ea0517810a3ce9f1002aeb5f65ce5fbe559b8a3c1c8f2cb2064e98
+
+
+https://sochain.com/api/v2/tx/DOGE/112013da59790a522e07bcf9058f651a00c85b6597b45de4a016831dbd9ab3c2 
+script_asm: "OP_RETURN 854851854",
+script_hex: "6a040e01f432" -> 0e - 01f432
+
+
+***/
+
+
+
+
+var tx_with_emoji_tiger = "db78e674f7ea0517810a3ce9f1002aeb5f65ce5fbe559b8a3c1c8f2cb2064e98"
+var tx_with_emoji_dragon = "112013da59790a522e07bcf9058f651a00c85b6597b45de4a016831dbd9ab3c2"
+var tx_with_giphy_id = "7f0d62bd374f3f3186f5f6685d94f2b47035d5d9ac47a391983cde534f022fc3";
+var tx_with_giphy_hex = "eeb70cf6e4495146848883d043d06a32ecda8fa2d5ff0b7c470616fa0c8f6981";
+
+var smartDogeTransaction = tx_with_emoji_tiger;
+//var smartDogeTransaction = tx_with_giphy_hex;
+
+
+var rgbToHexFix = function (rgb) { 
+  var hex = Number(rgb).toString(16);
+  str = "";  
+  	for (var n = 0; n < hex.length; n += 2) {
+		str += hex.substr(hex.length - n - 2, 2);
+	}
+  return str;
+};
+
+doIt("giphy.com/Q4IN9hDFEwISDujIbe")
+
+function doIt(str) {
+
+}
+
+
+String.prototype.getHex = function(){
+  var hex = Number(this).toString(16);
+  str = "";  
+  	for (var n = 0; n < hex.length; n += 2) {
+		str += hex.substr(hex.length - n - 2, 2);
+	}
+  return str;
+}
+
+
+function extractHexFromRawTx(rawTx) {
+	var data = "";
+	rawTx.data.outputs.forEach(function(line) {
+		if(line.script.startsWith("OP_RETURN ")) {
+			console.log(line);
+			 
+			data = line.script.slice(10,80);
+			
+			$('span#ctx').text(data);
+			console.log("hexdecode:", data.getHex());
+		}
+	})
+	hex = data.getHex()
+	
+	return hex;
+}
+
+
+function routeFromHex(hex) {
+
+	switch(hex.substr(0,2)) {
+		case "00": 
+			return false;
+		case "0e":
+			//console.log("EMOJI FOUND");
+			return hex.substr(2);
+		case "0f":
+			//console.log("GIPHY FOUND");
+			return hex.substr(2);
+		default: 
+			return false;	
+	}
+
+}
+
+
+function getEmojiFromTx(txid) {
+var emojilink = '.emoji-' + txid;
+console.log(emojilink);
+	$(emojilink).html("");
+$.get( "https://chain.so/api/v2/get_tx/DOGE/" + txid, function( response ) {
+	var emoji = "";
+	responseFinal = routeFromHex(extractHexFromRawTx(response))
+	console.log("responseFinal", responseFinal)
+	if(responseFinal) {
+		emoji = "&#x" + routeFromHex(extractHexFromRawTx(response))
+	}
+	
+	$(emojilink).html(emoji);
+}, "json" );
+
+}
+
+$.get( "https://chain.so/api/v2/get_tx/DOGE/" + smartDogeTransaction, function( response ) {
+  
+
+	hexdata = extractHexFromRawTx(response);
+	finalData = routeFromHex(hexdata);
+	
+	// "&#x" + routeFromHex(extractHexFromRawTx(tx))
+	$('span#chex').text(hexdata);
+	console.info('--- SMARTDOGE TX ----------------------------------\n', response, '\n', hexdata, '\n-----------------------------------------------------');
+	$('span#cemoji').html("&#x"+finalData);
+	var txurl = 'https://chain.so/api/v2/tx/DOGE/' + smartDogeTransaction;
+	$('span#ctxlink').html('<a href="' + txurl + '">' + txurl + '</a>');
+	
+	//console.info(hexdata);
+
+  $('span#txresponse').html( "Response: <PRE>" + JSON.stringify(response, undefined, 2) + "</PRE><br/>" ) // Dogecoin
+}, "json" );
+
+
+ 
+    </script>
+  </head>
+  <body>
+
+<div>
+<img src="https://gph.is/g/Z8vMloN">
+    <b>Transaction</b>: <span id="ctx"></span></br>
+	<b>Hex</b>: <span id="chex"></span></br>
+	<b>Emoji</b>: <span id="cemoji"></span></br>
+	<b>TX Link</b>: <span id="ctxlink"></span></br>
+	<b>Raw Data</b>: <span id="txresponse"></span></br>
+		
+
+	
+    </div>
+
+    <p></p>
+
+    <div>
+      <b>Last Block</b>: <span id="csblock">Waiting for new block...</span>
+    </div>
+
+    <p></p>
+
+    <div>
+      <b>Blockchain Activity</b>: <span id="cstxpm">Waiting for activity data...</span>
+    </div>
+
+    <p></p>
+
+    <div>
+      <table id="latest_transactions_table" style="border: 1px dotted silver;">
+	<thead>
+	  <td style="border-right: 1px dotted silver;"><b>Transaction ID</b></td><td style="border-right: 1px dotted silver;"><b>Inputs : Outputs</b></td><td style="border-right: 1px dotted silver;"><b>Volume</b> (&#208;)</td>
+		<td><b>Emoji</b></td>
+	</thead>
+	<tbody>
+	</tbody>
+      </table>
+    </div>
+
+    <p></p>
+
+    <div>
+      <b>Websocket</b>: <span id="status"></span>
+    </div>
+
+  </body>
+</html>
