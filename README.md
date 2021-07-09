@@ -69,3 +69,21 @@ decoding OP_RETURN hex values -> GIPHY_ID -> insert image with https://media.gip
 ### looking at
   clone this repository and open index.html file
   
+  
+# roadmap
+  
+  
+- [x] technical background check
+- [x] proof-of-concept
+- [x] minimal visualisation prototype
+- [wip] get official support from all main core devs
+- [wip] add prototype of safe emoji+giphy send/receive function to dogecoin-qt reference wallet as PR in 1.14.4-dev with optional build flag
+- [ ] implement safe emoji+giphy send / receive function in other wallets  
+- [ ] add TIGER enhancement to 1.21
+- [ ] get more devs on board to build smart contract addon for doge nodes (smart contract VM)
+- [ ] implement animal charity emoji wallet example with sub-routing of funds based on animal emojis (frog shelter and wolf farms, you know)
+- [ ] get some designers who can communicate this slightly authistic words in memes
+  
+# contribute
+we're open for contributions and discussions, please check out the links above and get on the team asap!
+  
