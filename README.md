@@ -51,3 +51,14 @@ decoding OP_RETURN hex values -> EMOJI_ID -> insert emoji according to Unicode E
                                                
 ## Giphy Transactions 
 decoding OP_RETURN hex values -> GIPHY_ID -> insert image with https://media.giphy.com/media/<GIPHY_ID>/giphy.gif link
+
+# reference implementations
+## upcoming
+  as a dogecoin-qt fork
+## existing
+### sending
+  check out https://github.com/fmhc/dogecoin-OP_RETURN
+  and do something like python3 send-OP_RETURN.py "nkv6k1wy5pRaZJbY3Buq2PS5s21oJHP78D" 1.0 '0e01f432' 1
+### looking at
+  clone this repository and open index.html file
+  
