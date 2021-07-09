@@ -19,8 +19,8 @@ the upcoming tx fee reduction leads to new way for new ideas on the reliable dog
 with a standard for sending memes / emojis, we pave the way for a smart doge protocol running
 just in the existing boundaries of the dogecoin-core protocol - no changes needed!
 
-everybody can now already send a doge transaction with a emoji or giphy link inside.
-an example: [https://chain.so/api/v2/tx/DOGE/db78e674f7ea0517810a3ce9f1002aeb5f65ce5fbe559b8a3c1c8f2cb2064e98](TX db78e674f7ea0517810a3ce9f1002aeb5f65ce5fbe559b8a3c1c8f2cb2064e98)
+everybody can now already send a doge transaction with a emoji or giphy link inside - an example: 
+[db78e674f7ea0517810a3ce9f1002aeb5f65ce5fbe559b8a3c1c8f2cb2064e98](https://chain.so/api/v2/tx/DOGE/db78e674f7ea0517810a3ce9f1002aeb5f65ce5fbe559b8a3c1c8f2cb2064e98)
 
 check the OP_RETURN part:
 ```
