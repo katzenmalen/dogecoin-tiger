@@ -12,6 +12,11 @@ you can find us on discord https://discord.gg/g5NmArGV
 and please have a look at the discussion on the dogecoin core github:
 https://github.com/dogecoin/dogecoin/discussions/2276
 
+
+here is a running test for the encoding, as the index.html provides:
+http://tiger.dogeflipping.info/
+
+
 # idea
 
 there are many ways to make dogecoin more fun to use and therefore be adapted by more people.
