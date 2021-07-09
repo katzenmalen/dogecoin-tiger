@@ -71,15 +71,21 @@ decoding OP_RETURN hex values -> GIPHY_ID -> insert image with https://media.gip
   
   
 # roadmap
+
+  current short-term main objectives:
+  - TIGER protocol definition as part of the official dogecoin-core project
+  - working prototype in dogecoin-qt
   
   
+  this is somehow a roadmap:
 - [x] technical background check
 - [x] proof-of-concept
 - [x] minimal visualisation prototype
-- [wip] get official support from all main core devs
-- [wip] add prototype of safe emoji+giphy send/receive function to dogecoin-qt reference wallet as PR in 1.14.4-dev with optional build flag
-- [ ] implement safe emoji+giphy send / receive function in other wallets  
-- [ ] add TIGER enhancement to 1.21
+- [ ] get official support from all main core devs (work in progress)
+- [ ] discuss why giphy IDs and Emojis are much safu & much wow for future of dogecoin as payment
+- [ ] add prototype of safe emoji+giphy send/receive function to dogecoin-qt reference wallet as PR in 1.14.4-dev with optional build flag
+- [ ] discussion / agreement to have TIGER emoji / giphy support as optional setting in dogecoin-qt 1.21
+- [ ] implement safu emoji+giphy send / receive function in other wallets  
 - [ ] get more devs on board to build smart contract addon for doge nodes (smart contract VM)
 - [ ] implement animal charity emoji wallet example with sub-routing of funds based on animal emojis (frog shelter and wolf farms, you know)
 - [ ] get some designers who can communicate this slightly authistic words in memes
