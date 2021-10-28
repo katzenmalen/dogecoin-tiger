@@ -7,6 +7,13 @@ Giphys &
 Emojis in
 op_Return
 ```
+
+please see the updated version of this prototype / proposal here:
+https://github.com/katzenmalen/dogecoin-cat
+
+
+for archive reasons:
+
 a reference for implementing meme support into standard dogecoin transactions
 you can find us on discord https://discord.gg/zdUFFdQ2Hq
 
@@ -50,10 +57,17 @@ OP_RETURN     | <2 Byte>     | <up to 78 Byte>
 flag | content | planned use | example | result
 ---- | ------- | ----------- | ------- | ------
 00-09 | <up to 78 Byte> | reserved (other use cases) | - | -
-0a-0d | <up to 78 Byte> | reserved (contract interaction) | - | -
+0a | <44 Byte> | Solana NFT | 44zJATRBfYz5B8cG75uXByM4S5qNkf7P71HNjvXtGmgA | -
+0b | <42 Byte> | Fantom NFT | 0xdb087e7c1115cff0499d34dd5eabb0453a363f0e | -
+0c | <32 Byte> | Tezos NFT | KT1XHwHm57K92XEsE5FNNDbeNk22eHsEwkBc | -
+0d | <up to 78 Byte> | Ethereum NFTs from a specific community Contract? | - | -
 0e | <hex-representation of an unicode emoji> | emojis | 0e01f42f | 🐯
 0f | <giphy shortlink> | giphys | 0f<hex-encoded Q4IN9hDFEwISDujIbe | ![Image giphy](https://media.giphy.com/media/Q4IN9hDFEwISDujIbe/giphy.gif)
 
+## NFT Transactions
+
+decoding OP_RETURN hex values -> NFT_ID -> insert Webviewer of NFT (Whitelisted NFTs only?)                                                 
+                                                 
 ## Emoji Transactions
 decoding OP_RETURN hex values -> EMOJI_ID -> insert emoji according to Unicode Emoji
                                                
