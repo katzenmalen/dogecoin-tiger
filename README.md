@@ -8,11 +8,6 @@ Emojis in
 op_Return
 ```
 
-please see the updated version of this prototype / proposal here:
-https://github.com/katzenmalen/dogecoin-cat
-
-
-for archive reasons:
 
 a reference for implementing meme support into standard dogecoin transactions
 you can find us on discord https://discord.gg/zdUFFdQ2Hq
